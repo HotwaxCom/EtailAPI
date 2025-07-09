@@ -15,11 +15,12 @@ public class EtailServices {
     private static final String MODULE = EtailServices.class.getName();
 
     private static final String AUTH_TOKEN = "bVK81TGQdfmO~oCKumk5qHia2YFvxoRxEDrk*wQc4nvQ~cBvCMZuT1QuejxZJ9F29tQ3o4ZxxcA7FsFA0qNn9g==";
+    private static final String API_URL = "https://app-e2.etailsolutions.com/api/SalesOrder/";
 
     //GET SALES ORDER BY ID
     public static Map<String, Object> getSalesOrder(DispatchContext dctx, Map<String, Object> context) {
         String orderId = (String) context.get("orderId");
-        String apiUrl = "https://app-e2.etailsolutions.com/api/SalesOrder/" + orderId;
+        String apiUrl = API_URL + orderId;
         Map<String, Object> result = ServiceUtil.returnSuccess();
 
         try {
@@ -33,6 +34,7 @@ public class EtailServices {
                 return ServiceUtil.returnError("HTTP Error: " + conn.getResponseCode());
             }
 
+            //used for reading from HTTP GET request, this could be simplified using Apache Commons but this is a safer approach
             BufferedReader reader = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder sb = new StringBuilder();
             String line;
@@ -40,6 +42,7 @@ public class EtailServices {
                 sb.append(line);
             }
 
+            //used to format json and just not return text like plain strings
             ObjectMapper mapper = new ObjectMapper();
             Map<String, Object> responseMap = mapper.readValue(sb.toString(), Map.class);
             result.put("order", responseMap);
@@ -62,19 +65,23 @@ public class EtailServices {
             if (UtilValidate.isEmpty(orderMap)) {
                 return ServiceUtil.returnError("Missing or empty 'orderBody' in input.");
             }
+
+            //it converts the java map into correct json format as API accepts
             String jsonBody = mapper.writeValueAsString(orderMap);
             Debug.logInfo("Sending JSON to Etail SalesOrder API: " + jsonBody, MODULE);
 
-            String apiUrl = "https://app-e2.etailsolutions.com/api/SalesOrder?AssignFulfillment=true";
+            String apiUrl = API_URL;
             URL url = new URL(apiUrl);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
             conn.setRequestMethod("POST");
             conn.setRequestProperty("Content-Type", "application/json");
             conn.setRequestProperty("x-evp-authentication", AUTH_TOKEN);
-            conn.setDoOutput(true);
+            conn.setDoOutput(true); //used with put and post that takes in a response body
 
-            try (OutputStream os = conn.getOutputStream()) {
+            //sends your json payload to the server
+            try (OutputStream os = conn.getOutputStream())
+            {
                 os.write(jsonBody.getBytes("UTF-8"));
             }
 
@@ -84,14 +91,12 @@ public class EtailServices {
             Debug.logInfo("Etail createSalesOrder response code: " + responseCode, MODULE);
             Debug.logInfo("Etail createSalesOrder content-type: " + contentType, MODULE);
 
-            InputStream is = (responseCode >= 200 && responseCode < 300)
-                    ? conn.getInputStream()
-                    : conn.getErrorStream();
-
+            InputStream is = (responseCode >= 200 && responseCode < 300) ? conn.getInputStream() : conn.getErrorStream();
             if (is == null) {
-                return ServiceUtil.returnError("Etail API returned no response body (InputStream is null).");
+                return ServiceUtil.returnError("Etail API returned no response body that is InputStream is null).");
             }
 
+            //used to read the content from the HTTP request, can also use commons IO
             StringBuilder responseBuilder = new StringBuilder();
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
                 String line;
@@ -141,7 +146,7 @@ public class EtailServices {
         try {
             String jsonBody = mapper.writeValueAsString(orderMap);
             Debug.logInfo("Sending update to Etail for Order ID " + orderId + ": " + jsonBody, MODULE);
-            String apiUrl = "https://app-e2.etailsolutions.com/api/SalesOrder/" + URLEncoder.encode(orderId, "UTF-8");
+            String apiUrl = API_URL + URLEncoder.encode(orderId, "UTF-8");
             URL url = new URL(apiUrl);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
@@ -155,9 +160,7 @@ public class EtailServices {
             int responseCode = conn.getResponseCode();
             String contentType = conn.getContentType();
             Debug.logInfo("Etail updateSalesOrder response code: " + responseCode, MODULE);
-            InputStream is = (responseCode >= 200 && responseCode < 300)
-                    ? conn.getInputStream()
-                    : conn.getErrorStream();
+            InputStream is = (responseCode >= 200 && responseCode < 300) ? conn.getInputStream() : conn.getErrorStream();
 
             if (is == null) {
                 return ServiceUtil.returnError("Etail API returned no response (InputStream is null)");
@@ -204,7 +207,7 @@ public class EtailServices {
         }
 
         try {
-            String apiUrl = "https://app-e2.etailsolutions.com/api/SalesOrder/" + id;
+            String apiUrl = API_URL + id;
             URL url = new URL(apiUrl);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
 
