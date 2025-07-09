@@ -10,17 +10,16 @@ import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.util.*;
 
-public class CreateEtailOrders {
+public class EtailServices {
 
-    private static final String MODULE = CreateEtailOrders.class.getName();
+    private static final String MODULE = EtailServices.class.getName();
 
     private static final String AUTH_TOKEN = "bVK81TGQdfmO~oCKumk5qHia2YFvxoRxEDrk*wQc4nvQ~cBvCMZuT1QuejxZJ9F29tQ3o4ZxxcA7FsFA0qNn9g==";
 
+    //GET SALES ORDER BY ID
     public static Map<String, Object> getSalesOrder(DispatchContext dctx, Map<String, Object> context) {
-
         String orderId = (String) context.get("orderId");
         String apiUrl = "https://app-e2.etailsolutions.com/api/SalesOrder/" + orderId;
-
         Map<String, Object> result = ServiceUtil.returnSuccess();
 
         try {
@@ -53,6 +52,7 @@ public class CreateEtailOrders {
         return result;
     }
 
+    //CREATE SALES ORDER
     public static Map<String, Object> createEtailOrders(DispatchContext dctx, Map<String, Object> context) {
         Map<String, Object> result = ServiceUtil.returnSuccess();
         ObjectMapper mapper = new ObjectMapper();
@@ -122,6 +122,7 @@ public class CreateEtailOrders {
         return result;
     }
 
+    //UPDATE SALES ORDER
     public static Map<String, Object> updateSalesOrder(DispatchContext dctx, Map<String, Object> context) {
         Map<String, Object> result = ServiceUtil.returnSuccess();
         ObjectMapper mapper = new ObjectMapper();
@@ -191,6 +192,7 @@ public class CreateEtailOrders {
         return result;
     }
 
+    //DELETE SALES ORDER
     public static Map<String, Object> deleteSalesOrder(DispatchContext dctx, Map<String, Object> context) {
         Map<String, Object> result = ServiceUtil.returnSuccess();
         ObjectMapper mapper = new ObjectMapper();
@@ -202,7 +204,6 @@ public class CreateEtailOrders {
         }
 
         try {
-            // ❌ DO NOT encode the ID if it's a UUID — keep it as-is
             String apiUrl = "https://app-e2.etailsolutions.com/api/SalesOrder/" + id;
             URL url = new URL(apiUrl);
             HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();

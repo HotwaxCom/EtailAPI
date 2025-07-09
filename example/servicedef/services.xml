@@ -167,4 +167,140 @@ under the License.
         <auto-attributes include="pk" mode="IN" optional="false"/>
     </service>
 
+    <!--Not to be used as these do not take info from Etail-->
+    <service name="getAllOrders" engine="java" auth="true" location="org.apache.ofbiz.example.SalesOrderServices" invoke="getAllOrders" export="true" action="GET">
+        <attribute name="orders" type="List" mode="OUT" optional="true"/>
+    </service>
+
+    <service name="findOrderById" engine="java" auth="true" export="true" action="GET"
+             location="org.apache.ofbiz.example.SalesOrderServices" invoke="findOrderById">
+        <description>Get basic order header information.</description>
+        <attribute name="orderId" type="String" mode="IN" optional="false" />
+        <attribute name="orderHeader" type="Map" mode="OUT" optional="false" />
+        <attribute name="orderItems" type="List" mode="OUT" optional="false" />
+    </service>
+
+    <service name="updateOrderById" export="true" engine="java" action="PUT"
+             location="org.apache.ofbiz.example.SalesOrderServices" invoke="updateOrderHeader" auth="true">
+        <attribute name="orderId" type="String" mode="IN" optional="false"/>
+        <attribute name="orderName" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="IN" optional="true"/>
+        <attribute name="salesChannelEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="productStoreId" type="String" mode="IN" optional="true"/>
+        <attribute name="orderTypeId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUom" type="String" mode="IN" optional="true"/>
+        <attribute name="orderItems" type="List" mode="IN" optional="true"/>
+        <attribute name="userLogin" type="org.apache.ofbiz.entity.GenericValue" mode="IN" optional="false"/>
+    </service>
+
+    <service name="createOrderById" engine="java" validate="true" export="true" auth="true" action="POST"
+             location="org.apache.ofbiz.example.SalesOrderServices" invoke="createOrderHeader">
+        <attribute name="partyId" type="String" mode="IN" optional="false">
+            <type-validate>
+                <fail-property resource="OrderErrorUiLabels" property="OrderRequiredFieldMissingPartyId"/>
+            </type-validate>
+        </attribute>
+        <attribute name="placingCustomerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="billToCustomerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="shipToCustomerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="endUserCustomerPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="billFromVendorPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="shipFromVendorPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="supplierAgentPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="orderName" type="String" mode="IN" optional="true"/>
+        <attribute name="visitId" type="String" mode="IN" optional="true"/>
+        <attribute name="affiliateId" type="String" mode="IN" optional="true"/>
+        <attribute name="productStoreId" type="String" mode="IN" optional="true"/>
+        <attribute name="originFacilityId" type="String" mode="IN" optional="true"/>
+        <attribute name="transactionId" type="String" mode="IN" optional="true"/>
+        <attribute name="terminalId" type="String" mode="IN" optional="true"/>
+        <attribute name="workEffortId" type="String" mode="IN" optional="true"/>
+        <attribute name="autoOrderShoppingListId" type="String" mode="IN" optional="true"/>
+        <attribute name="webSiteId" type="String" mode="IN" optional="true"/>
+        <attribute name="externalId" type="String" mode="IN" optional="true"/>
+        <attribute name="internalCode" type="String" mode="IN" optional="true"/>
+        <attribute name="agreementId" type="String" mode="IN" optional="true"/>
+        <attribute name="distributorId" type="String" mode="IN" optional="true"/>
+        <attribute name="orderTypeId" type="String" mode="INOUT" optional="false"/>
+        <attribute name="salesChannelEnumId" type="String" mode="IN" optional="true"/>
+        <attribute name="orderItemGroups" type="List" mode="IN" optional="true"/>
+        <attribute name="orderItems" type="List" mode="IN" optional="false">
+            <type-validate>
+                <fail-property resource="OrderErrorUiLabels" property="OrderRequiredFieldMissingOrderItems"/>
+            </type-validate>
+        </attribute>
+        <attribute name="orderTerms" type="List" mode="IN" optional="true"/>
+        <!-- workeffort contains the rental start/enddate, nbr of persons. WorkEfforts is mandatory for ordertype = RENTAL_ORDER_ITEM-->
+        <attribute name="workEfforts" type="List" mode="IN" optional="true"/>
+        <attribute name="orderAdjustments" type="List" mode="IN" optional="false">
+            <type-validate>
+                <fail-property resource="OrderErrorUiLabels" property="OrderRequiredFieldMissingOrderAdjustments"/>
+            </type-validate>
+        </attribute>
+        <attribute name="billingAccountId" type="String" mode="IN" optional="true"/>
+        <attribute name="shippingAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="firstAttemptOrderId" type="String" mode="IN" optional="true"/>
+        <attribute name="currencyUom" type="String" mode="IN" optional="false">
+            <type-validate>
+                <fail-property resource="OrderErrorUiLabels" property="OrderRequiredFieldMissingCurrencyUom"/>
+            </type-validate>
+        </attribute>
+        <attribute name="grandTotal" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="taxAmount" type="BigDecimal" mode="IN" optional="true"/>
+        <attribute name="orderDate" type="Timestamp" mode="IN" optional="true"/>
+        <attribute name="orderItemShipGroupInfo" type="List" mode="IN" optional="true"/>
+        <attribute name="orderItemAttributes" type="List" mode="IN" optional="true"/>
+        <attribute name="orderAttributes" type="List" mode="IN" optional="true"/>
+        <attribute name="orderPaymentInfo" type="List" mode="IN" optional="true"/>
+        <attribute name="orderContactMechs" type="List" mode="IN" optional="true"/>
+        <attribute name="orderItemContactMechs" type="List" mode="IN" optional="true"/>
+        <attribute name="orderItemPriceInfos" type="List" mode="IN" optional="true"/>
+        <attribute name="orderProductPromoUses" type="List" mode="IN" optional="true"/>
+        <attribute name="orderProductPromoCodes" type="Set" mode="IN" optional="true"/>
+        <attribute name="orderItemSurveyResponses" type="List" mode="IN" optional="true"/>
+        <attribute name="trackingCodeOrders" type="List" mode="IN" optional="true"/>
+        <attribute name="orderAdditionalPartyRoleMap" type="Map" mode="IN" optional="true"/>
+        <attribute name="orderItemAssociations" type="List" mode="IN" optional="true"/>
+        <attribute name="orderInternalNotes" type="List" mode="IN" optional="true"/>
+        <attribute name="orderNotes" type="List" mode="IN" optional="true"/>
+        <attribute name="supplierPartyId" type="String" mode="IN" optional="true"/>
+        <attribute name="orderId" type="String" mode="INOUT" optional="true"/>
+        <attribute name="originOrderId" type="String" mode="IN" optional="true"/>
+        <attribute name="isRushOrder" type="String" mode="IN" optional="true"/>
+        <attribute name="priority" type="String" mode="IN" optional="true"/>
+        <attribute name="statusId" type="String" mode="OUT" optional="false"/>
+    </service>
+
+    <service name="deleteOrderById" engine="java" export="true" action="POST"
+             location="org.apache.ofbiz.example.SalesOrderServices" invoke="deleteOrderHeader" auth="true">
+        <attribute name="orderId" mode="IN" type="String" optional="false"></attribute>
+    </service>
+
+    <!--Establishes communication with Etail-->
+    <service name="getSalesOrder" engine="java" location="org.apache.ofbiz.example.EtailServices" invoke="getSalesOrder" auth="false"
+             export="true" action="POST">
+        <attribute name="orderId" type="String" mode="IN"/>
+        <attribute name="order" type="Object" mode="OUT"/>
+    </service>
+
+    <service name="createEtailOrders" engine="java" location="org.apache.ofbiz.example.EtailServices"
+             invoke="createEtailOrders"
+             auth="false" export="true" action="POST">
+        <attribute name="orderBody" type="Map" mode="IN" optional="false"/>
+        <attribute name="response" type="Map" mode="OUT"/>
+    </service>
+
+    <service name="updateSalesOrder" engine="java" location="org.apache.ofbiz.example.EtailServices"
+             invoke="updateSalesOrder" auth="false" export="true" action="POST">
+        <attribute name="orderId" type="String" mode="IN" optional="false"/>
+        <attribute name="orderBody" type="Map" mode="IN" optional="false"/>
+        <attribute name="response" type="Map" mode="OUT"/>
+    </service>
+
+    <service name="deleteSalesOrder" engine="java" location="org.apache.ofbiz.example.EtailServices"
+             invoke="deleteSalesOrder" auth="false" export="true" action="POST">
+        <attribute name="id" type="String" mode="IN" optional="false"/>
+        <attribute name="response" type="Map" mode="OUT"/>
+    </service>
+
 </services>

@@ -246,6 +246,62 @@ under the License.
         <response name="success" type="view" value="ExampleReact"/>
     </request-map>
 
+    <!--These mappings are not for Etail-->
+    <request-map uri="findOrderById">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="FindOrderById"/>
+    </request-map>
+
+    <request-map uri="updateOrderById">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="UpdateOrderById"/>
+    </request-map>
+
+    <request-map uri="deleteOrderById">
+        <security https="true" auth="true"/>
+        <response name="success" type="view" value="DeleteOrderById"/>
+    </request-map>
+
+    <request-map uri="createOrderById">
+        <security https="true" auth="true"/>
+        <event type="java" path="org.apache.ofbiz.order.shoppingcart.CheckOutEvents" invoke="createOrder"/>
+        <response name="success" type="view" value="createOrderById"/>
+    </request-map>
+
+    <request-map uri="getAllOrders">
+        <security https="true" auth="true"/>
+        <event type="service" invoke="getAllOrders"/>
+        <response name="success" type="view" value="getAllOrders"/>
+    </request-map>
+
+    <!--Etail communication controller mapping -->
+    <request-map uri="getSalesOrder">
+        <event type="java" invoke="EtailServices.getSalesOrder"/>
+        <security auth="false"/>
+        <response name="success" type="json"/>
+        <response name="error" type="json"/>
+    </request-map>
+
+    <request-map uri="updateSalesOrder">
+        <event type="java" invoke="updateSalesOrder"/>
+        <security auth="false"/>
+        <response name="success" type="json"/>
+        <response name="error" type="json"/>
+    </request-map>
+
+    <request-map uri="createEtailOrders">
+        <event type="service" invoke="createEtailOrders"/>
+        <security https="true" auth="false"/>
+        <response name="success" type="json"/>
+        <response name="error" type="json"/>
+    </request-map>
+
+    <request-map uri="deleteSalesOrder">
+        <event type="service" invoke="deleteSalesOrder"/>
+        <security https="true" auth="false"/>
+        <response name="success" type="json"/>
+        <response name="error" type="json"/>
+    </request-map>
     <!-- end of request mappings -->
 
     <!-- View Mappings -->
